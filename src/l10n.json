@@ -577,5 +577,6 @@
     "posts.publish": "Publicar post",
     "posts.feed": "Feed de posts",
     "posts.ageBadge": "Projeto recomendado para {minAge}+",
-
+    "posts.comment": "Comentar",
+    "footer.disclaimer": "Todo o código pertence ao Scratch. Este site foi editado apenas por diversão (fan project, sem afiliação oficial)."
 }
