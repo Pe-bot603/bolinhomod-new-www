@@ -1,0 +1,128 @@
+@use '../../colors' as *;
+
+.posts-page {
+    display: grid;
+    grid-template-columns: minmax(18rem, 24rem) 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: $background-color;
+}
+
+.posts-composer,
+.post-card {
+    border: 1px solid $ui-border;
+    border-radius: .75rem;
+    background: $ui-white;
+    box-shadow: 0 2px 8px $box-shadow-light-gray;
+}
+
+.posts-composer {
+    padding: 1rem;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+    }
+
+    input,
+    textarea {
+        border: 1px solid $ui-border;
+        border-radius: .5rem;
+        padding: .6rem .75rem;
+        font-size: 1rem;
+    }
+
+    textarea {
+        min-height: 6rem;
+        resize: vertical;
+    }
+
+    button {
+        border: 0;
+        border-radius: 999px;
+        background: $ui-orange;
+        color: $ui-white;
+        padding: .65rem 1rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+}
+
+.age-checkbox,
+.min-age-row {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.posts-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.post-card {
+    padding: 1rem;
+
+    header {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.age-badge {
+    display: inline-block;
+    margin-bottom: .75rem;
+    padding: .25rem .6rem;
+    border-radius: 999px;
+    background: $ui-orange-25percent;
+    color: $ui-dark-orange;
+    font-weight: 700;
+}
+
+.post-actions {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: .75rem;
+
+    button {
+        border: 1px solid $ui-border-orange;
+        border-radius: 999px;
+        background: $ui-white;
+        color: $type-gray;
+        padding: .35rem .7rem;
+        cursor: pointer;
+    }
+}
+
+.comments-list {
+    margin: 0 0 .75rem;
+    padding-left: 1rem;
+}
+
+.comment-form {
+    display: flex;
+    gap: .5rem;
+
+    input {
+        flex: 1;
+        border: 1px solid $ui-border;
+        border-radius: .5rem;
+        padding: .5rem .7rem;
+    }
+
+    button {
+        border: 0;
+        border-radius: .5rem;
+        background: $ui-orange;
+        color: $ui-white;
+        padding: .5rem .75rem;
+    }
+}
+
+@media (max-width: 960px) {
+    .posts-page {
+        grid-template-columns: 1fr;
+    }
+}
