@@ -47,6 +47,19 @@
         font-weight: 700;
         cursor: pointer;
     }
+
+    .posts-login-required {
+        margin: 0 0 .75rem;
+        color: $type-gray;
+        font-weight: 700;
+    }
+
+    button:disabled,
+    input:disabled,
+    textarea:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+    }
 }
 
 .age-checkbox,
@@ -99,6 +112,11 @@
 .comments-list {
     margin: 0 0 .75rem;
     padding-left: 1rem;
+}
+
+.posts-empty {
+    margin: 0;
+    color: $type-gray;
 }
 
 .comment-form {
