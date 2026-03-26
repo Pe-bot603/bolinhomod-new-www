@@ -15,11 +15,14 @@ class Messages extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
+            'handleMentionsTabClick',
+            'handleNotificationsTabClick',
             'handleFilterClick',
             'handleMessageDismiss',
             'handleLoadMoreMessages'
         ]);
         this.state = {
+            activityTab: 'notifications',
             filter: ''
         };
     }
@@ -77,6 +80,12 @@ class Messages extends React.Component {
             }
         }
     }
+    handleNotificationsTabClick () {
+        this.setState({activityTab: 'notifications'});
+    }
+    handleMentionsTabClick () {
+        this.setState({activityTab: 'mentions'});
+    }
     handleFilterClick (field, choice) {
         if (this.props.user.token) {
             this.props.dispatch(
@@ -125,6 +134,7 @@ class Messages extends React.Component {
 
         return (
             <MessagesPresentation
+                activityTab={this.state.activityTab}
                 adminMessages={this.props.adminMessages}
                 filter={this.props.filter}
                 loadMore={loadMore}
@@ -134,6 +144,8 @@ class Messages extends React.Component {
                 scratcherInvite={this.props.invite}
                 sessionStatus={this.props.sessionStatus}
                 user={this.props.user}
+                onMentionsTabClick={this.handleMentionsTabClick}
+                onNotificationsTabClick={this.handleNotificationsTabClick}
                 onAdminDismiss={this.handleMessageDismiss}
                 onFilterClick={this.handleFilterClick}
                 onLoadMoreMethod={this.handleLoadMoreMessages}

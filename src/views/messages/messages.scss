@@ -33,6 +33,28 @@
     margin-bottom: 3rem;
 }
 
+.messages-social-tabs {
+    display: flex;
+    gap: .5rem;
+    margin: 1.25rem 0;
+
+    button {
+        border: 1px solid colors.$ui-border;
+        border-radius: 999px;
+        background: colors.$ui-white;
+        color: colors.$type-gray;
+        cursor: pointer;
+        font-weight: bold;
+        padding: .5rem .9rem;
+
+        &.is-active {
+            border-color: colors.$ui-purple;
+            background: colors.$ui-purple;
+            color: colors.$type-white;
+        }
+    }
+}
+
 .messages-social {
     overflow-anchor: none;
 }
