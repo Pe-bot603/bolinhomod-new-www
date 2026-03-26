@@ -123,6 +123,7 @@ const PreviewPresentation = ({
     onSetProjectThumbnailer,
     onShare,
     onShareAttempt,
+    onVisibilityModeChange,
     onSocialClicked,
     onSocialClosed,
     onToggleComments,
@@ -152,6 +153,7 @@ const PreviewPresentation = ({
     user,
     userOwnsProject,
     userUsesParentEmail,
+    visibilityMode,
     visibilityInfo
 }) => {
     const [canViewProjectJourney, setCanViewProjectJourney] = useState(false);
@@ -200,7 +202,12 @@ const PreviewPresentation = ({
             />
         );
     } else if (canSeeShare) {
-        if (isShared && justShared) { // if was shared a while ago, don't show any share banner
+        if (visibilityMode === 'unlisted') {
+            banner = (<Banner
+                className="banner-success"
+                message={<FormattedMessage id="project.visibility.unlistedDescription" />}
+            />);
+        } else if (isShared && justShared) { // if was shared a while ago, don't show any share banner
             if (isNewScratcher) {
                 banner = (<Banner
                     className="banner-success"
@@ -459,6 +466,7 @@ const PreviewPresentation = ({
                                     reportOpen={reportOpen}
                                     shareDate={shareDate}
                                     socialOpen={socialOpen}
+                                    visibilityMode={visibilityMode}
                                     userOwnsProject={userOwnsProject}
                                     onAddToStudioClicked={onAddToStudioClicked}
                                     onAddToStudioClosed={onAddToStudioClosed}
@@ -468,6 +476,7 @@ const PreviewPresentation = ({
                                     onSocialClicked={onSocialClicked}
                                     onSocialClosed={onSocialClosed}
                                     onToggleStudio={onToggleStudio}
+                                    onVisibilityModeChange={onVisibilityModeChange}
                                 />
                             </div>
                         </FlexRow>
@@ -608,6 +617,7 @@ const PreviewPresentation = ({
                             reportOpen={reportOpen}
                             shareDate={shareDate}
                             socialOpen={socialOpen}
+                            visibilityMode={visibilityMode}
                             userOwnsProject={userOwnsProject}
                             onAddToStudioClicked={onAddToStudioClicked}
                             onAddToStudioClosed={onAddToStudioClosed}
@@ -617,6 +627,7 @@ const PreviewPresentation = ({
                             onSocialClicked={onSocialClicked}
                             onSocialClosed={onSocialClosed}
                             onToggleStudio={onToggleStudio}
+                            onVisibilityModeChange={onVisibilityModeChange}
                         />
                     </FlexRow>
                 </MediaQuery>
@@ -845,6 +856,7 @@ PreviewPresentation.propTypes = {
     onSetProjectThumbnailer: PropTypes.func,
     onShareAttempt: PropTypes.func,
     onShare: PropTypes.func,
+    onVisibilityModeChange: PropTypes.func,
     onSocialClicked: PropTypes.func,
     onSocialClosed: PropTypes.func,
     onToggleComments: PropTypes.func,
@@ -876,6 +888,7 @@ PreviewPresentation.propTypes = {
     }),
     userOwnsProject: PropTypes.bool,
     userUsesParentEmail: PropTypes.bool,
+    visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
     visibilityInfo: PropTypes.shape({
         censored: PropTypes.bool,
         censoredByAdmin: PropTypes.bool,
