@@ -103,7 +103,7 @@ class Navigation extends React.Component {
                 <ul>
                     <li className="logo">
                         <a
-                            aria-label="Scratch"
+                            aria-label="BolinhoMod"
                             href="/"
                         />
                     </li>
@@ -121,6 +121,11 @@ class Navigation extends React.Component {
                     <li className="link ideas">
                         <a href="/ideas">
                             <FormattedMessage id="general.ideas" />
+                        </a>
+                    </li>
+                    <li className="link posts">
+                        <a href="/posts">
+                            <FormattedMessage id="general.posts" />
                         </a>
                     </li>
                     {

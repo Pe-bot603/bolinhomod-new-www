@@ -260,6 +260,7 @@ SocialMessagesList.defaultProps = {
 };
 
 const MessagesPresentation = ({
+    activityTab,
     adminMessages,
     filter = '',
     intl,
@@ -269,8 +270,11 @@ const MessagesPresentation = ({
     onAdminDismiss,
     onFilterClick,
     onLoadMoreMethod,
+    onMentionsTabClick,
+    onNotificationsTabClick,
     requestStatus,
-    scratcherInvite
+    scratcherInvite,
+    user
 }) => {
     let adminMessageLength = adminMessages.length;
     if (Object.keys(scratcherInvite).length > 0) {
@@ -280,6 +284,19 @@ const MessagesPresentation = ({
     if (numNewSocialMessages < 0) {
         numNewSocialMessages = 0;
     }
+    const lowerCaseUsername = (user && user.username ? user.username : '').toLowerCase();
+    const messageMentionsUser = message => (
+        message.type === 'addcomment' &&
+        lowerCaseUsername.length > 0 &&
+        typeof message.comment_fragment === 'string' &&
+        message.comment_fragment.toLowerCase().includes(`@${lowerCaseUsername}`)
+    );
+    const mentionMessages = messages.filter(messageMentionsUser);
+    const mentionNewCount = messages
+        .slice(0, numNewSocialMessages)
+        .filter(messageMentionsUser).length;
+    const socialMessages = activityTab === 'mentions' ? mentionMessages : messages;
+    const socialUnreadCount = activityTab === 'mentions' ? mentionNewCount : numNewSocialMessages;
 
     return (
         <div className="messages">
@@ -308,6 +325,22 @@ const MessagesPresentation = ({
                 </FlexRow>
             </TitleBanner>
             <div className="messages-details inner">
+                <div className="messages-social-tabs">
+                    <button
+                        className={activityTab === 'notifications' ? 'is-active' : ''}
+                        onClick={onNotificationsTabClick}
+                        type="button"
+                    >
+                        <FormattedMessage id="messages.tabNotifications" />
+                    </button>
+                    <button
+                        className={activityTab === 'mentions' ? 'is-active' : ''}
+                        onClick={onMentionsTabClick}
+                        type="button"
+                    >
+                        <FormattedMessage id="messages.tabMentions" />
+                    </button>
+                </div>
                 {adminMessages.length > 0 || Object.keys(scratcherInvite).length > 0 ? [
                     <section
                         className="messages-admin"
@@ -360,8 +393,8 @@ const MessagesPresentation = ({
                 <SocialMessagesList
                     loadMore={loadMore}
                     loadStatus={requestStatus.message}
-                    messages={messages}
-                    numNewMessages={numNewSocialMessages}
+                    messages={socialMessages}
+                    numNewMessages={socialUnreadCount}
                     onLoadMoreMethod={onLoadMoreMethod}
                 />
             </div>
@@ -370,6 +403,7 @@ const MessagesPresentation = ({
 };
 
 MessagesPresentation.propTypes = {
+    activityTab: PropTypes.oneOf(['notifications', 'mentions']).isRequired,
     adminMessages: PropTypes.arrayOf(PropTypes.object).isRequired,
     filter: PropTypes.string,
     intl: intlShape,
@@ -379,13 +413,18 @@ MessagesPresentation.propTypes = {
     onAdminDismiss: PropTypes.func.isRequired,
     onFilterClick: PropTypes.func.isRequired,
     onLoadMoreMethod: PropTypes.func,
+    onMentionsTabClick: PropTypes.func.isRequired,
+    onNotificationsTabClick: PropTypes.func.isRequired,
     requestStatus: PropTypes.shape({
         admin: PropTypes.string,
         clear: PropTypes.string,
         message: PropTypes.string,
         delete: PropTypes.string
     }).isRequired,
-    scratcherInvite: PropTypes.object.isRequired // eslint-disable-line react/forbid-prop-types
+    scratcherInvite: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    user: PropTypes.shape({
+        username: PropTypes.string
+    }).isRequired
 };
 
 module.exports = injectIntl(MessagesPresentation);
