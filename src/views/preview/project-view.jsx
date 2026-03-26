@@ -1116,7 +1116,7 @@ class Preview extends React.Component {
                             backpackHost={this.props.backpackHost}
                             canAddToStudio={this.props.canAddToStudio}
                             canDeleteComments={this.props.isAdmin || this.props.userOwnsProject}
-                            canRemix={this.props.canRemix}
+                            canRemix={this.props.canRemix && this.state.allowRemix}
                             canReport={this.props.canReport}
                             canRestoreComments={this.props.isAdmin}
                             canSave={this.props.canSave}
