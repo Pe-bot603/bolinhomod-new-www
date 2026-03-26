@@ -154,7 +154,6 @@ const PreviewPresentation = ({
     user,
     userOwnsProject,
     userUsesParentEmail,
-    allowRemix,
     visibilityMode,
     visibilityInfo
 }) => {
@@ -468,7 +467,6 @@ const PreviewPresentation = ({
                                     reportOpen={reportOpen}
                                     shareDate={shareDate}
                                     socialOpen={socialOpen}
-                                    allowRemix={allowRemix}
                                     visibilityMode={visibilityMode}
                                     userOwnsProject={userOwnsProject}
                                     onAddToStudioClicked={onAddToStudioClicked}
@@ -480,7 +478,6 @@ const PreviewPresentation = ({
                                     onSocialClosed={onSocialClosed}
                                     onToggleStudio={onToggleStudio}
                                     onVisibilityModeChange={onVisibilityModeChange}
-                                    onAllowRemixesChange={onAllowRemixesChange}
                                 />
                             </div>
                         </FlexRow>
@@ -621,7 +618,6 @@ const PreviewPresentation = ({
                             reportOpen={reportOpen}
                             shareDate={shareDate}
                             socialOpen={socialOpen}
-                            allowRemix={allowRemix}
                             visibilityMode={visibilityMode}
                             userOwnsProject={userOwnsProject}
                             onAddToStudioClicked={onAddToStudioClicked}
@@ -633,7 +629,6 @@ const PreviewPresentation = ({
                             onSocialClosed={onSocialClosed}
                             onToggleStudio={onToggleStudio}
                             onVisibilityModeChange={onVisibilityModeChange}
-                            onAllowRemixesChange={onAllowRemixesChange}
                         />
                     </FlexRow>
                 </MediaQuery>
@@ -895,7 +890,6 @@ PreviewPresentation.propTypes = {
     }),
     userOwnsProject: PropTypes.bool,
     userUsesParentEmail: PropTypes.bool,
-    allowRemix: PropTypes.bool,
     visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
     visibilityInfo: PropTypes.shape({
         censored: PropTypes.bool,

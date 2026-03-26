@@ -37,8 +37,6 @@ const Subactions = ({
     showAddToStudioMuteError,
     socialOpen,
     onVisibilityModeChange,
-    onAllowRemixesChange,
-    allowRemix,
     visibilityMode,
     userOwnsProject
 }) => {
@@ -81,15 +79,6 @@ const Subactions = ({
                                 <FormattedMessage id="project.visibility.public" />
                             </option>
                         </select>
-                        <label className="remix-checkbox" htmlFor="project-allow-remix">
-                            <input
-                                checked={allowRemix}
-                                id="project-allow-remix"
-                                onChange={onAllowRemixesChange}
-                                type="checkbox"
-                            />
-                            <FormattedMessage id="project.remixPermission.label" />
-                        </label>
                     </div>
                 )}
                 {(canReport) &&
@@ -190,10 +179,8 @@ Subactions.propTypes = {
     showAddToStudioMuteError: PropTypes.bool,
     socialOpen: PropTypes.bool,
     userOwnsProject: PropTypes.bool,
-    allowRemix: PropTypes.bool,
     visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
-    onVisibilityModeChange: PropTypes.func,
-    onAllowRemixesChange: PropTypes.func
+    onVisibilityModeChange: PropTypes.func
 };
 
 module.exports = connect(
