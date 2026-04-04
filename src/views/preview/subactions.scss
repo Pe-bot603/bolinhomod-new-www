@@ -93,6 +93,36 @@
                 }
             }
         }
+
+        .visibility-select-wrapper {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            margin: 0 0 0 .5rem;
+            color: colors.$type-gray;
+
+            label {
+                font-size: .75rem;
+                font-weight: bold;
+            }
+
+            .remix-checkbox {
+                display: flex;
+                align-items: center;
+                gap: .25rem;
+                margin-left: .35rem;
+                white-space: nowrap;
+            }
+
+            select {
+                border: 1px solid colors.$ui-border;
+                border-radius: 999px;
+                background: colors.$ui-white;
+                color: colors.$type-gray;
+                font-size: .75rem;
+                padding: .3rem .6rem;
+            }
+        }
     }
 }
 

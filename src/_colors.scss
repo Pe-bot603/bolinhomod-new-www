@@ -37,13 +37,13 @@ $ui-cyan-blue: hsla(194, 73%, 36%, 1); //#19809F
 /* Using www naming convention for now, should be consistent with gui */
 $ui-aqua: hsla(144, 45%, 36%, 1);
 $ui-aqua-dark: color.adjust($ui-aqua, $lightness: -10%);
-$ui-purple-light: hsla(260, 100%, 88%, 1); // #DACEF3
-$ui-purple: hsla(260, 100%, 70%, 1); // #9966FF Looks Primary
-$ui-purple-darkish: hsla(260, 55%, 55%, 1);
-$ui-purple-dark: hsla(260, 60%, 60%, 1); // #855CD6 Looks Secondary
-$ui-purple-darker: hsla(260, 46%, 54%, 1);
-$ui-purple-10percent: hsla(260, 60%, 60%, .1);
-$ui-purple-25percent: hsla(260, 60%, 60%, .25);
+$ui-purple-light: hsla(33, 100%, 88%, 1);
+$ui-purple: hsla(32, 100%, 64%, 1);
+$ui-purple-darkish: hsla(28, 65%, 52%, 1);
+$ui-purple-dark: hsla(28, 70%, 50%, 1);
+$ui-purple-darker: hsla(26, 72%, 42%, 1);
+$ui-purple-10percent: hsla(28, 70%, 50%, .1);
+$ui-purple-25percent: hsla(28, 70%, 50%, .25);
 $ui-magenta: hsla(300, 53%, 60%, 1); /* #CF63CF Sounds Primary */
 $ui-magenta-dark: hsla(300, 48%, 50%, 1); /* #BD42BD Sounds Tertiary */
 $ui-magenta-dark-15percent: hsla(300, 48%, 50%, .16); /* #BD42BD Sounds Tertiary */

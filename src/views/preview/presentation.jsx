@@ -100,6 +100,7 @@ const PreviewPresentation = ({
     onAddComment,
     onAddToStudioClicked,
     onAddToStudioClosed,
+    onAllowRemixesChange,
     onBannerDismiss,
     onCloseAdminPanel,
     onCloseEmailConfirmationModal,
@@ -123,6 +124,7 @@ const PreviewPresentation = ({
     onSetProjectThumbnailer,
     onShare,
     onShareAttempt,
+    onVisibilityModeChange,
     onSocialClicked,
     onSocialClosed,
     onToggleComments,
@@ -152,6 +154,8 @@ const PreviewPresentation = ({
     user,
     userOwnsProject,
     userUsesParentEmail,
+    allowRemix,
+    visibilityMode,
     visibilityInfo
 }) => {
     const [canViewProjectJourney, setCanViewProjectJourney] = useState(false);
@@ -200,7 +204,12 @@ const PreviewPresentation = ({
             />
         );
     } else if (canSeeShare) {
-        if (isShared && justShared) { // if was shared a while ago, don't show any share banner
+        if (visibilityMode === 'unlisted') {
+            banner = (<Banner
+                className="banner-success"
+                message={<FormattedMessage id="project.visibility.unlistedDescription" />}
+            />);
+        } else if (isShared && justShared) { // if was shared a while ago, don't show any share banner
             if (isNewScratcher) {
                 banner = (<Banner
                     className="banner-success"
@@ -459,6 +468,8 @@ const PreviewPresentation = ({
                                     reportOpen={reportOpen}
                                     shareDate={shareDate}
                                     socialOpen={socialOpen}
+                                    allowRemix={allowRemix}
+                                    visibilityMode={visibilityMode}
                                     userOwnsProject={userOwnsProject}
                                     onAddToStudioClicked={onAddToStudioClicked}
                                     onAddToStudioClosed={onAddToStudioClosed}
@@ -468,6 +479,8 @@ const PreviewPresentation = ({
                                     onSocialClicked={onSocialClicked}
                                     onSocialClosed={onSocialClosed}
                                     onToggleStudio={onToggleStudio}
+                                    onVisibilityModeChange={onVisibilityModeChange}
+                                    onAllowRemixesChange={onAllowRemixesChange}
                                 />
                             </div>
                         </FlexRow>
@@ -608,6 +621,8 @@ const PreviewPresentation = ({
                             reportOpen={reportOpen}
                             shareDate={shareDate}
                             socialOpen={socialOpen}
+                            allowRemix={allowRemix}
+                            visibilityMode={visibilityMode}
                             userOwnsProject={userOwnsProject}
                             onAddToStudioClicked={onAddToStudioClicked}
                             onAddToStudioClosed={onAddToStudioClosed}
@@ -617,6 +632,8 @@ const PreviewPresentation = ({
                             onSocialClicked={onSocialClicked}
                             onSocialClosed={onSocialClosed}
                             onToggleStudio={onToggleStudio}
+                            onVisibilityModeChange={onVisibilityModeChange}
+                            onAllowRemixesChange={onAllowRemixesChange}
                         />
                     </FlexRow>
                 </MediaQuery>
@@ -822,6 +839,7 @@ PreviewPresentation.propTypes = {
     onAddComment: PropTypes.func,
     onAddToStudioClicked: PropTypes.func,
     onAddToStudioClosed: PropTypes.func,
+    onAllowRemixesChange: PropTypes.func,
     onBannerDismiss: PropTypes.func,
     onCloseAdminPanel: PropTypes.func,
     onCloseEmailConfirmationModal: PropTypes.func,
@@ -845,6 +863,7 @@ PreviewPresentation.propTypes = {
     onSetProjectThumbnailer: PropTypes.func,
     onShareAttempt: PropTypes.func,
     onShare: PropTypes.func,
+    onVisibilityModeChange: PropTypes.func,
     onSocialClicked: PropTypes.func,
     onSocialClosed: PropTypes.func,
     onToggleComments: PropTypes.func,
@@ -876,6 +895,8 @@ PreviewPresentation.propTypes = {
     }),
     userOwnsProject: PropTypes.bool,
     userUsesParentEmail: PropTypes.bool,
+    allowRemix: PropTypes.bool,
+    visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
     visibilityInfo: PropTypes.shape({
         censored: PropTypes.bool,
         censoredByAdmin: PropTypes.bool,
