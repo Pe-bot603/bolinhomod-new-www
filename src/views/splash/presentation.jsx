@@ -363,6 +363,12 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
 
         return (
             <div className="splash">
+                <div className="splash-dev-notice">
+                    <FormattedMessage
+                        defaultMessage="⚠️ Este site ainda está em desenvolvimento. Algumas funções podem mudar ou apresentar erros."
+                        id="splash.devNotice"
+                    />
+                </div>
                 {(this.props.shouldShowEmailConfirmation &&
                     <EmailConfirmationBanner
                         userUsesParentEmail={this.props.userUsesParentEmail}

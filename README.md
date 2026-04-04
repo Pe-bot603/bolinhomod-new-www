@@ -145,6 +145,15 @@ the site hosted on your local machine can be accessed by a web browser by enteri
 
 ### Troubleshooting
 
+#### Vercel deploy returns 404 on routes
+
+This project outputs many route-specific HTML files (for example `splash.html`, `projects.html`, `studio.html`) instead of a single `index.html`.
+
+For Vercel, use the included `vercel.json` with:
+- `buildCommand: npm run build`
+- `outputDirectory: build`
+- rewrites from dynamic routes (like `/projects/:id`, `/studios/:id`) to the matching generated HTML files.
+
 #### `npm start` fails with `Cannot find module 'express'`
 
 This means dependencies were not installed successfully (or you are running `npm start` from a different folder).

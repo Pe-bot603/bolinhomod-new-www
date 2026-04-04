@@ -1,3 +1,9 @@
+/* eslint-disable react/jsx-no-bind */
+const React = require('react');
+const FormattedMessage = require('react-intl').FormattedMessage;
+const injectIntl = require('react-intl').injectIntl;
+const connect = require('react-redux').connect;
+const PropTypes = require('prop-types');
 const React = require('react');
 const FormattedMessage = require('react-intl').FormattedMessage;
 const injectIntl = require('react-intl').injectIntl;
@@ -7,6 +13,12 @@ const render = require('../../lib/render.jsx');
 
 require('./posts.scss');
 
+const PostsView = ({user}) => {
+    const username = user && user.username ? user.username : '';
+    const isLoggedIn = Boolean(username);
+
+    const [posts, setPosts] = React.useState([]);
+    const [draft, setDraft] = React.useState({
 const starterPosts = [
     {
         id: 1,
@@ -42,6 +54,10 @@ const PostsView = injectIntl(() => {
         minAge: 10
     });
     const [commentDrafts, setCommentDrafts] = React.useState({});
+    const [reactions, setReactions] = React.useState({});
+
+    const updateDraft = event => {
+        const {name, value, type, checked} = event.target;
 
     const updateDraft = evt => {
         const {name, value, type, checked} = evt.target;
@@ -51,6 +67,14 @@ const PostsView = injectIntl(() => {
         }));
     };
 
+    const createPost = event => {
+        event.preventDefault();
+        if (!isLoggedIn) return;
+        if (!draft.project.trim() || !draft.content.trim()) return;
+
+        const newPost = {
+            id: Date.now(),
+            user: username,
     const createPost = evt => {
         evt.preventDefault();
         if (!draft.user.trim() || !draft.project.trim() || !draft.content.trim()) return;
@@ -65,6 +89,10 @@ const PostsView = injectIntl(() => {
             minAge: draft.ageRestricted ? Number(draft.minAge) || 10 : 0,
             comments: []
         };
+
+        setPosts(current => [newPost, ...current]);
+        setDraft(current => ({
+            ...current,
         setPosts(current => [newPost, ...current]);
         setDraft({
             user: draft.user,
@@ -72,6 +100,20 @@ const PostsView = injectIntl(() => {
             content: '',
             ageRestricted: false,
             minAge: 10
+        }));
+    };
+
+    const reactPost = (postId, field) => {
+        const reactionKey = `${postId}:${field}`;
+        if (reactions[reactionKey]) return;
+        setReactions(current => ({...current, [reactionKey]: true}));
+        setPosts(current => current.map(post => (
+            post.id === postId ? {...post, [field]: 1} : post
+        )));
+    };
+
+    const addComment = (event, postId) => {
+        event.preventDefault();
         });
     };
 
@@ -95,6 +137,18 @@ const PostsView = injectIntl(() => {
         <Page>
             <main className="posts-page">
                 <section className="posts-composer">
+                    <h1><FormattedMessage defaultMessage="Posts da Comunidade" id="posts.title" /></h1>
+                    <p><FormattedMessage defaultMessage="Compartilhe projetos com a comunidade." id="posts.subtitle" /></p>
+
+                    {!isLoggedIn && (
+                        <p className="posts-login-required">
+                            <FormattedMessage id="posts.loginRequired" />
+                        </p>
+                    )}
+
+                    <form onSubmit={createPost}>
+                        <input
+                            disabled={!isLoggedIn}
                     <h1><FormattedMessage id="posts.title" /></h1>
                     <p><FormattedMessage id="posts.subtitle" /></p>
                     <form onSubmit={createPost}>
@@ -106,6 +160,7 @@ const PostsView = injectIntl(() => {
                             value={draft.project}
                         />
                         <textarea
+                            disabled={!isLoggedIn}
                             name="content"
                             onChange={updateDraft}
                             placeholder="O que você quer compartilhar sobre seu projeto?"
@@ -114,6 +169,7 @@ const PostsView = injectIntl(() => {
                         <label className="age-checkbox">
                             <input
                                 checked={draft.ageRestricted}
+                                disabled={!isLoggedIn}
                                 name="ageRestricted"
                                 onChange={updateDraft}
                                 type="checkbox"
@@ -124,6 +180,7 @@ const PostsView = injectIntl(() => {
                             <label className="min-age-row">
                                 <FormattedMessage id="posts.minimumAge" />
                                 <input
+                                    disabled={!isLoggedIn}
                                     max="18"
                                     min="6"
                                     name="minAge"
@@ -133,11 +190,18 @@ const PostsView = injectIntl(() => {
                                 />
                             </label>
                         )}
+                        <button disabled={!isLoggedIn} type="submit">
+                            <FormattedMessage defaultMessage="Publicar post" id="posts.publish" />
+                        </button>
                         <button type="submit"><FormattedMessage id="posts.publish" /></button>
                     </form>
                 </section>
 
                 <section className="posts-feed">
+                    <h2><FormattedMessage defaultMessage="Feed de posts" id="posts.feed" /></h2>
+                    {posts.length === 0 && (
+                        <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
+                    )}
                     <h2><FormattedMessage id="posts.feed" /></h2>
                     {posts.map(post => (
                         <article className="post-card" key={post.id}>
@@ -152,6 +216,18 @@ const PostsView = injectIntl(() => {
                                 </div>
                             )}
                             <div className="post-actions">
+                                <button
+                                    disabled={reactions[`${post.id}:hearts`]}
+                                    onClick={() => reactPost(post.id, 'hearts')}
+                                    type="button"
+                                >
+                                    ❤️ {post.hearts}
+                                </button>
+                                <button
+                                    disabled={reactions[`${post.id}:stars`]}
+                                    onClick={() => reactPost(post.id, 'stars')}
+                                    type="button"
+                                >
                                 <button onClick={() => reactPost(post.id, 'hearts')} type="button">
                                     ❤️ {post.hearts}
                                 </button>
@@ -164,6 +240,11 @@ const PostsView = injectIntl(() => {
                                     <li key={`${post.id}-${index}`}>{comment}</li>
                                 ))}
                             </ul>
+                            <form className="comment-form" onSubmit={event => addComment(event, post.id)}>
+                                <input
+                                    onChange={event => setCommentDrafts(current => ({
+                                        ...current,
+                                        [post.id]: event.target.value
                             <form className="comment-form" onSubmit={evt => addComment(evt, post.id)}>
                                 <input
                                     onChange={evt => setCommentDrafts(current => ({
@@ -181,6 +262,23 @@ const PostsView = injectIntl(() => {
             </main>
         </Page>
     );
+};
+
+PostsView.propTypes = {
+    user: PropTypes.shape({
+        username: PropTypes.string
+    })
+};
+
+PostsView.defaultProps = {
+    user: null
+};
+
+const ConnectedPostsView = connect(state => ({
+    user: state.session.session.user
+}))(injectIntl(PostsView));
+
+render(<ConnectedPostsView />, document.getElementById('app'));
 });
 
 render(<PostsView />, document.getElementById('app'));
