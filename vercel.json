@@ -13,5 +13,8 @@
     {"source": "/search/:path*", "destination": "/search.html"},
     {"source": "/download/link", "destination": "/download.html"},
     {"source": "/:path((?!.*\\.).*)", "destination": "/:path.html"}
+  "version": 2,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

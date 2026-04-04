@@ -317,6 +317,7 @@ class Preview extends React.Component {
             const savedAllowRemixes = getProjectAllowRemixes(this.props.projectInfo.id);
             this.setState({ // eslint-disable-line react/no-did-update-set-state
                 allowRemix: typeof savedAllowRemixes === 'boolean' ? savedAllowRemixes : true,
+            this.setState({ // eslint-disable-line react/no-did-update-set-state
                 visibilityMode: savedMode || (this.props.isShared ? 'public' : 'private')
             });
         }
