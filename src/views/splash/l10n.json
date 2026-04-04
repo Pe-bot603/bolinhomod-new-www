@@ -62,5 +62,6 @@
 
     "featurebanner.highContrast.comingSoon": "COMING SOON: Color Contrast in Scratch!",
     "featurebanner.highContrast.forumTitle": "Block Color Settings and Site Updates",
-    "featurebanner.highContrast.learnMore": "Learn More"
+    "featurebanner.highContrast.learnMore": "Learn More",
+    "splash.devNotice": "⚠️ This site is still in development. Some features may change or be unstable."
 }

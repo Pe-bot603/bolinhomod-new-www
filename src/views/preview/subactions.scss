@@ -106,6 +106,14 @@
                 font-weight: bold;
             }
 
+            .remix-checkbox {
+                display: flex;
+                align-items: center;
+                gap: .25rem;
+                margin-left: .35rem;
+                white-space: nowrap;
+            }
+
             select {
                 border: 1px solid colors.$ui-border;
                 border-radius: 999px;

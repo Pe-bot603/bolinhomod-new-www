@@ -82,5 +82,7 @@
     "project.visibility.private": "Private / Unshare",
     "project.visibility.unlisted": "Unlisted (link only)",
     "project.visibility.public": "Public / Share",
+    "project.visibility.unlistedDescription": "This project is unlisted: it does not show in public listings, but anyone with the link can open it.",
+    "project.remixPermission.label": "Allow remixes"
     "project.visibility.unlistedDescription": "This project is unlisted: it does not show in public listings, but anyone with the link can open it."
 }

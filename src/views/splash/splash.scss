@@ -10,6 +10,15 @@
 }
 
 .splash {
+    .splash-dev-notice {
+        margin: 0;
+        background: colors.$ui-orange;
+        color: colors.$type-white;
+        text-align: center;
+        font-weight: 700;
+        padding: .7rem 1rem;
+    }
+
     .splash-header {
         display: flex;
         flex-direction: row;
