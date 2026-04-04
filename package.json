@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Standalone WWW client for Scratch",
   "scripts": {
-    "start": "node ./dev-server/index.js",
+    "start": "node ./bin/check-install.js && node ./dev-server/index.js",
     "test": "npm run test:lint && npm run build && npm run test:unit",
     "test:lint": "eslint . --ext .js,.jsx,.json",
     "test:health": "jest ./test/health/*.test.js",
@@ -86,7 +86,6 @@
     "babel-plugin-transform-require-context": "0.1.1",
     "bowser": "1.9.4",
     "buffer": "6.0.3",
-    "canvas": "2.11.2",
     "cheerio": "1.2.0",
     "classnames": "2.5.1",
     "cookie": "0.4.1",
@@ -194,5 +193,12 @@
     "Edge >= 0 and last 3 years and not dead",
     "Safari >= 0 and last 3 years and not dead",
     "ios_saf >= 0 and last 3 years and not dead"
-  ]
+  ],
+  "optionalDependencies": {
+    "canvas": "2.11.2"
+  },
+  "engines": {
+    "node": "20.x",
+    "npm": ">=10"
+  }
 }
