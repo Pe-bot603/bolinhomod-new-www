@@ -36,6 +36,10 @@ const Subactions = ({
     shareDate,
     showAddToStudioMuteError,
     socialOpen,
+    onVisibilityModeChange,
+    onAllowRemixesChange,
+    allowRemix,
+    visibilityMode,
     userOwnsProject
 }) => {
     const [showMuteMessage, setShowMuteMessage] = useState(false);
@@ -57,6 +61,37 @@ const Subactions = ({
                 {/*  eslint-enable react/jsx-sort-props */}
             </div>
             <FlexRow className="action-buttons">
+                {userOwnsProject && (
+                    <div className="visibility-select-wrapper">
+                        <label htmlFor="project-visibility-select">
+                            <FormattedMessage id="project.visibility.label" />
+                        </label>
+                        <select
+                            id="project-visibility-select"
+                            onChange={onVisibilityModeChange}
+                            value={visibilityMode}
+                        >
+                            <option value="private">
+                                <FormattedMessage id="project.visibility.private" />
+                            </option>
+                            <option value="unlisted">
+                                <FormattedMessage id="project.visibility.unlisted" />
+                            </option>
+                            <option value="public">
+                                <FormattedMessage id="project.visibility.public" />
+                            </option>
+                        </select>
+                        <label className="remix-checkbox" htmlFor="project-allow-remix">
+                            <input
+                                checked={allowRemix}
+                                id="project-allow-remix"
+                                onChange={onAllowRemixesChange}
+                                type="checkbox"
+                            />
+                            <FormattedMessage id="project.remixPermission.label" />
+                        </label>
+                    </div>
+                )}
                 {(canReport) &&
                     <React.Fragment>
                         <Button
@@ -112,7 +147,7 @@ const Subactions = ({
                     </React.Fragment>
                 }
                 {/* only show copy link button, modal if project is shared */}
-                {isShared && projectInfo && projectInfo.id && (
+                {(isShared || visibilityMode === 'unlisted') && projectInfo && projectInfo.id && (
                     <React.Fragment>
                         <Button
                             className="action-button copy-link-button"
@@ -154,7 +189,11 @@ Subactions.propTypes = {
     shareDate: PropTypes.string,
     showAddToStudioMuteError: PropTypes.bool,
     socialOpen: PropTypes.bool,
-    userOwnsProject: PropTypes.bool
+    userOwnsProject: PropTypes.bool,
+    allowRemix: PropTypes.bool,
+    visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
+    onVisibilityModeChange: PropTypes.func,
+    onAllowRemixesChange: PropTypes.func
 };
 
 module.exports = connect(

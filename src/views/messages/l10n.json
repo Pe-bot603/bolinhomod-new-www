@@ -16,6 +16,8 @@
     "messages.learnMore": "Click here to learn more",
     "messages.loveText": "{profileLink} loved your project {projectLink}",
     "messages.messageTitle": "Messages",
+    "messages.tabNotifications": "Notifications",
+    "messages.tabMentions": "Mentions",
     "messages.profileComment": "{profileLink} commented on {commentLink}",
     "messages.commentReply": "{profileLink} replied to your comment on {commentLink}",
     "messages.profileOther": "{username}'s profile",
