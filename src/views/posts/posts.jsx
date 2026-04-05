@@ -4,6 +4,9 @@ const FormattedMessage = require('react-intl').FormattedMessage;
 const injectIntl = require('react-intl').injectIntl;
 const connect = require('react-redux').connect;
 const PropTypes = require('prop-types');
+const React = require('react');
+const FormattedMessage = require('react-intl').FormattedMessage;
+const injectIntl = require('react-intl').injectIntl;
 
 const Page = require('../../components/page/www/page.jsx');
 const render = require('../../lib/render.jsx');
@@ -11,11 +14,41 @@ const render = require('../../lib/render.jsx');
 require('./posts.scss');
 
 const PostsView = ({intl, user}) => {
+const PostsView = ({user}) => {
     const username = user && user.username ? user.username : '';
     const isLoggedIn = Boolean(username);
 
     const [posts, setPosts] = React.useState([]);
     const [draft, setDraft] = React.useState({
+const starterPosts = [
+    {
+        id: 1,
+        user: 'NinaCoder',
+        project: 'Labirinto de Laranja',
+        content: 'Acabei de publicar meu novo projeto com fases secretas. Me digam o que melhorar!',
+        hearts: 12,
+        stars: 8,
+        ageRestricted: false,
+        minAge: 0,
+        comments: ['Muito legal!', 'Adorei o visual!']
+    },
+    {
+        id: 2,
+        user: 'RafaBlocks',
+        project: 'Aventura Espacial',
+        content: 'Esse projeto é recomendado para 13+ por conter desafios avançados de lógica.',
+        hearts: 20,
+        stars: 13,
+        ageRestricted: true,
+        minAge: 13,
+        comments: ['Top demais.', 'Os desafios ficaram incríveis!']
+    }
+];
+
+const PostsView = injectIntl(() => {
+    const [posts, setPosts] = React.useState(starterPosts);
+    const [draft, setDraft] = React.useState({
+        user: '',
         project: '',
         content: '',
         ageRestricted: false,
@@ -31,6 +64,12 @@ const PostsView = ({intl, user}) => {
 
     const updateDraft = event => {
         const {name, value, type, checked} = event.target;
+
+    const updateDraft = event => {
+        const {name, value, type, checked} = event.target;
+
+    const updateDraft = evt => {
+        const {name, value, type, checked} = evt.target;
         setDraft(current => ({
             ...current,
             [name]: type === 'checkbox' ? checked : value
@@ -49,6 +88,12 @@ const PostsView = ({intl, user}) => {
         const newPost = {
             id: Date.now(),
             user: username,
+    const createPost = evt => {
+        evt.preventDefault();
+        if (!draft.user.trim() || !draft.project.trim() || !draft.content.trim()) return;
+        const newPost = {
+            id: Date.now(),
+            user: draft.user.trim(),
             project: draft.project.trim(),
             content: draft.content.trim(),
             hearts: 0,
@@ -61,6 +106,9 @@ const PostsView = ({intl, user}) => {
         setPosts(current => [newPost, ...current]);
         setDraft(current => ({
             ...current,
+        setPosts(current => [newPost, ...current]);
+        setDraft({
+            user: draft.user,
             project: '',
             content: '',
             ageRestricted: false,
@@ -85,6 +133,19 @@ const PostsView = ({intl, user}) => {
             setShowSafetyMessage(true);
             return;
         }
+        });
+    };
+
+    const reactPost = (postId, field) => {
+        setPosts(current => current.map(post => (
+            post.id === postId ? {...post, [field]: post[field] + 1} : post
+        )));
+    };
+
+    const addComment = (evt, postId) => {
+        evt.preventDefault();
+        const text = (commentDrafts[postId] || '').trim();
+        if (!text) return;
         setPosts(current => current.map(post => (
             post.id === postId ? {...post, comments: [...post.comments, text]} : post
         )));
@@ -107,6 +168,11 @@ const PostsView = ({intl, user}) => {
                     <form onSubmit={createPost}>
                         <input
                             disabled={!isLoggedIn}
+                    <h1><FormattedMessage id="posts.title" /></h1>
+                    <p><FormattedMessage id="posts.subtitle" /></p>
+                    <form onSubmit={createPost}>
+                        <input name="user" onChange={updateDraft} placeholder="Seu usuário" value={draft.user} />
+                        <input
                             name="project"
                             onChange={updateDraft}
                             placeholder="Nome do projeto"
@@ -146,6 +212,7 @@ const PostsView = ({intl, user}) => {
                         <button disabled={!isLoggedIn} type="submit">
                             <FormattedMessage defaultMessage="Publicar post" id="posts.publish" />
                         </button>
+                        <button type="submit"><FormattedMessage id="posts.publish" /></button>
                     </form>
                 </section>
 
@@ -187,6 +254,10 @@ const PostsView = ({intl, user}) => {
                     {posts.length === 0 && (
                         <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
                     )}
+                    {posts.length === 0 && (
+                        <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
+                    )}
+                    <h2><FormattedMessage id="posts.feed" /></h2>
                     {posts.map(post => (
                         <article className="post-card" key={post.id}>
                             <header>
@@ -212,6 +283,10 @@ const PostsView = ({intl, user}) => {
                                     onClick={() => reactPost(post.id, 'stars')}
                                     type="button"
                                 >
+                                <button onClick={() => reactPost(post.id, 'hearts')} type="button">
+                                    ❤️ {post.hearts}
+                                </button>
+                                <button onClick={() => reactPost(post.id, 'stars')} type="button">
                                     ⭐ {post.stars}
                                 </button>
                             </div>
@@ -225,6 +300,11 @@ const PostsView = ({intl, user}) => {
                                     onChange={event => setCommentDrafts(current => ({
                                         ...current,
                                         [post.id]: event.target.value
+                            <form className="comment-form" onSubmit={evt => addComment(evt, post.id)}>
+                                <input
+                                    onChange={evt => setCommentDrafts(current => ({
+                                        ...current,
+                                        [post.id]: evt.target.value
                                     }))}
                                     placeholder="Escreva um comentário"
                                     value={commentDrafts[post.id] || ''}
@@ -257,3 +337,6 @@ const ConnectedPostsView = connect(state => ({
 }))(injectIntl(PostsView));
 
 render(<ConnectedPostsView />, document.getElementById('app'));
+});
+
+render(<PostsView />, document.getElementById('app'));
