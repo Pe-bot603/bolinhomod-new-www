@@ -218,12 +218,3 @@ const ConnectedPostsView = connect(state => ({
 }))(PostsView);
 
 render(<ConnectedPostsView />, document.getElementById('app'));
-PostsView.defaultProps = {
-    user: null
-};
-
-const ConnectedPostsView = connect(state => ({
-    user: state.session.session.user
-}))(PostsView);
-
-render(<ConnectedPostsView />, document.getElementById('app'));
