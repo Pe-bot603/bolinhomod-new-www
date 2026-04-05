@@ -154,6 +154,9 @@ For Vercel, use the included `vercel.json` with:
 - `outputDirectory: build`
 - rewrites from dynamic routes (like `/projects/:id`, `/studios/:id`) to the matching generated HTML files.
 
+If Vercel shows **"This deployment can not be redeployed. Please try again from a fresh commit."**,
+push a new commit (even a tiny doc/config change) and deploy that new commit SHA instead of trying to redeploy an immutable old build.
+
 #### `npm start` fails with `Cannot find module 'express'`
 
 This means dependencies were not installed successfully (or you are running `npm start` from a different folder).

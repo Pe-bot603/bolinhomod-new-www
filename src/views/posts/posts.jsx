@@ -13,6 +13,7 @@ const render = require('../../lib/render.jsx');
 
 require('./posts.scss');
 
+const PostsView = ({intl, user}) => {
 const PostsView = ({user}) => {
     const username = user && user.username ? user.username : '';
     const isLoggedIn = Boolean(username);
@@ -55,6 +56,14 @@ const PostsView = injectIntl(() => {
     });
     const [commentDrafts, setCommentDrafts] = React.useState({});
     const [reactions, setReactions] = React.useState({});
+    const [showSafetyMessage, setShowSafetyMessage] = React.useState(false);
+
+    const hasSelfHarmMention = text => (
+        /(suic[ií]dio|suicide|kill myself|me matar|quero morrer|tirar a pr[oó]pria vida)/i.test(text || '')
+    );
+
+    const updateDraft = event => {
+        const {name, value, type, checked} = event.target;
 
     const updateDraft = event => {
         const {name, value, type, checked} = event.target;
@@ -71,6 +80,10 @@ const PostsView = injectIntl(() => {
         event.preventDefault();
         if (!isLoggedIn) return;
         if (!draft.project.trim() || !draft.content.trim()) return;
+        if (hasSelfHarmMention(draft.content)) {
+            setShowSafetyMessage(true);
+            return;
+        }
 
         const newPost = {
             id: Date.now(),
@@ -114,6 +127,12 @@ const PostsView = injectIntl(() => {
 
     const addComment = (event, postId) => {
         event.preventDefault();
+        const text = (commentDrafts[postId] || '').trim();
+        if (!text) return;
+        if (hasSelfHarmMention(text)) {
+            setShowSafetyMessage(true);
+            return;
+        }
         });
     };
 
@@ -199,6 +218,42 @@ const PostsView = injectIntl(() => {
 
                 <section className="posts-feed">
                     <h2><FormattedMessage defaultMessage="Feed de posts" id="posts.feed" /></h2>
+                    {showSafetyMessage && (
+                        <div className="posts-safety-message" role="alert">
+                            <strong>
+                                {intl.locale && intl.locale.startsWith('pt') ? (
+                                    <FormattedMessage
+                                        defaultMessage="Uma mensagem muito importante para você"
+                                        id="safety.suicide.header.pt"
+                                    />
+                                ) : (
+                                    <FormattedMessage
+                                        defaultMessage="A important message to you"
+                                        id="safety.suicide.header"
+                                    />
+                                )}
+                            </strong>
+                            <p>
+                                {intl.locale && intl.locale.startsWith('pt') ? (
+                                    <FormattedMessage
+                                        defaultMessage="Ei... Se você está pensando em cometer isso, por favor, não comita esse ato. Sua vida importa e você é muito importante. Não cometa suicídio. Por favor, encontre ajuda imediatamente. Suicídio é algo muito sério e não pode ser ignorado. Sua saúde mental é muito importante. Se você é um menor de idade, por favor, fale com os seus pais ou com alguém de confiança imediatamente sobre seus pensamentos suicidos. Não deixe isso passar, pois é algo muito sério. Eu espero muito que você fique bem, seja quem for."
+                                        id="safety.suicide.body.pt"
+                                    />
+                                ) : (
+                                    <FormattedMessage
+                                        defaultMessage="Hey, if you're thinking to commit that, please don't do it. Your life matters, and you're important. Don't commit suicide. Please, find help immediatly. Suicide is a serious thing and cannot be ignored. You mental health is important. Also, if you're an underage person, please tell your parents or someone you trust immediatly about your suicidal thoughts. Don't let this pass; it's very serious. I hope you get well soon, whoever you are."
+                                        id="safety.suicide.body"
+                                    />
+                                )}
+                            </p>
+                            <button onClick={() => setShowSafetyMessage(false)} type="button">
+                                <FormattedMessage defaultMessage="Fechar" id="general.close" />
+                            </button>
+                        </div>
+                    )}
+                    {posts.length === 0 && (
+                        <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
+                    )}
                     {posts.length === 0 && (
                         <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
                     )}
@@ -265,6 +320,9 @@ const PostsView = injectIntl(() => {
 };
 
 PostsView.propTypes = {
+    intl: PropTypes.shape({
+        locale: PropTypes.string
+    }).isRequired,
     user: PropTypes.shape({
         username: PropTypes.string
     })

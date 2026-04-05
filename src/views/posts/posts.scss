@@ -119,6 +119,28 @@
     color: $type-gray;
 }
 
+.posts-safety-message {
+    border: 1px solid $ui-red;
+    border-radius: .75rem;
+    background: $ui-red-25percent;
+    margin: 0;
+    padding: .85rem 1rem;
+
+    p {
+        margin: .5rem 0 .75rem;
+        line-height: 1.4;
+    }
+
+    button {
+        border: 0;
+        border-radius: .5rem;
+        padding: .4rem .8rem;
+        background: $ui-red;
+        color: $ui-white;
+        cursor: pointer;
+    }
+}
+
 .comment-form {
     display: flex;
     gap: .5rem;
