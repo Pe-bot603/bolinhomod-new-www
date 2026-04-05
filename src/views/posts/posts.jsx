@@ -7,6 +7,8 @@ const PropTypes = require('prop-types');
 
 const Page = require('../../components/page/www/page.jsx');
 const render = require('../../lib/render.jsx');
+const SafetyModal = require('../../components/safety-modal/safety-modal.jsx');
+const useSafetyMessage = require('../../lib/use-safety-message.js');
 
 require('./posts.scss');
 
@@ -22,11 +24,7 @@ const PostsView = injectIntl(({intl, user}) => {
         minAge: 10
     });
     const [commentDrafts, setCommentDrafts] = React.useState({});
-    const [showSafetyMessage, setShowSafetyMessage] = React.useState(false);
-
-    const hasSelfHarmMention = text => (
-        /(suic[ií]dio|suicide|kill myself|me matar|quero morrer|tirar a pr[oó]pria vida|self.harm|automutila|cutting)/i.test(text || '')
-    );
+    const {showSafetyMessage, setShowSafetyMessage, checkAndShowIfNeeded} = useSafetyMessage();
 
     const updateDraft = evt => {
         const {name, value, type, checked} = evt.target;
@@ -40,8 +38,8 @@ const PostsView = injectIntl(({intl, user}) => {
         evt.preventDefault();
         if (!isLoggedIn) return;
         if (!draft.project.trim() || !draft.content.trim()) return;
-        if (hasSelfHarmMention(draft.content)) {
-            setShowSafetyMessage(true);
+        
+        if (checkAndShowIfNeeded(draft.content)) {
             return;
         }
 
@@ -77,10 +75,11 @@ const PostsView = injectIntl(({intl, user}) => {
         evt.preventDefault();
         const text = (commentDrafts[postId] || '').trim();
         if (!text) return;
-        if (hasSelfHarmMention(text)) {
-            setShowSafetyMessage(true);
+        
+        if (checkAndShowIfNeeded(text)) {
             return;
         }
+
         setPosts(current => current.map(post => (
             post.id === postId ? {...post, comments: [...post.comments, text]} : post
         )));
@@ -89,6 +88,12 @@ const PostsView = injectIntl(({intl, user}) => {
 
     return (
         <Page>
+            <SafetyModal 
+                isVisible={showSafetyMessage} 
+                onClose={() => setShowSafetyMessage(false)}
+                intl={intl}
+            />
+            
             <main className="posts-page">
                 <section className="posts-composer">
                     <h1><FormattedMessage id="posts.title" /></h1>
@@ -147,23 +152,6 @@ const PostsView = injectIntl(({intl, user}) => {
 
                 <section className="posts-feed">
                     <h2><FormattedMessage id="posts.feed" /></h2>
-                    {showSafetyMessage && (
-                        <div className="posts-safety-message" role="alert">
-                            <strong>
-                                <FormattedMessage
-                                    id={intl.locale && intl.locale.startsWith('pt') ? 'safety.suicide.header.pt' : 'safety.suicide.header'}
-                                />
-                            </strong>
-                            <p>
-                                <FormattedMessage
-                                    id={intl.locale && intl.locale.startsWith('pt') ? 'safety.suicide.body.pt' : 'safety.suicide.body'}
-                                />
-                            </p>
-                            <button onClick={() => setShowSafetyMessage(false)} type="button">
-                                <FormattedMessage id="general.close" />
-                            </button>
-                        </div>
-                    )}
                     {posts.length === 0 && (
                         <p className="posts-empty"><FormattedMessage id="posts.empty" /></p>
                     )}
