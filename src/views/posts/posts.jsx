@@ -4,22 +4,12 @@ const FormattedMessage = require('react-intl').FormattedMessage;
 const injectIntl = require('react-intl').injectIntl;
 const connect = require('react-redux').connect;
 const PropTypes = require('prop-types');
-const React = require('react');
-const FormattedMessage = require('react-intl').FormattedMessage;
-const injectIntl = require('react-intl').injectIntl;
 
 const Page = require('../../components/page/www/page.jsx');
 const render = require('../../lib/render.jsx');
 
 require('./posts.scss');
 
-const PostsView = ({intl, user}) => {
-const PostsView = ({user}) => {
-    const username = user && user.username ? user.username : '';
-    const isLoggedIn = Boolean(username);
-
-    const [posts, setPosts] = React.useState([]);
-    const [draft, setDraft] = React.useState({
 const starterPosts = [
     {
         id: 1,
@@ -45,28 +35,23 @@ const starterPosts = [
     }
 ];
 
-const PostsView = injectIntl(() => {
+const PostsView = injectIntl(({intl, user}) => {
+    const username = user && user.username ? user.username : '';
+    const isLoggedIn = Boolean(username);
+
     const [posts, setPosts] = React.useState(starterPosts);
     const [draft, setDraft] = React.useState({
-        user: '',
         project: '',
         content: '',
         ageRestricted: false,
         minAge: 10
     });
     const [commentDrafts, setCommentDrafts] = React.useState({});
-    const [reactions, setReactions] = React.useState({});
     const [showSafetyMessage, setShowSafetyMessage] = React.useState(false);
 
     const hasSelfHarmMention = text => (
         /(suic[ií]dio|suicide|kill myself|me matar|quero morrer|tirar a pr[oó]pria vida)/i.test(text || '')
     );
-
-    const updateDraft = event => {
-        const {name, value, type, checked} = event.target;
-
-    const updateDraft = event => {
-        const {name, value, type, checked} = event.target;
 
     const updateDraft = evt => {
         const {name, value, type, checked} = evt.target;
@@ -76,8 +61,8 @@ const PostsView = injectIntl(() => {
         }));
     };
 
-    const createPost = event => {
-        event.preventDefault();
+    const createPost = evt => {
+        evt.preventDefault();
         if (!isLoggedIn) return;
         if (!draft.project.trim() || !draft.content.trim()) return;
         if (hasSelfHarmMention(draft.content)) {
@@ -88,12 +73,6 @@ const PostsView = injectIntl(() => {
         const newPost = {
             id: Date.now(),
             user: username,
-    const createPost = evt => {
-        evt.preventDefault();
-        if (!draft.user.trim() || !draft.project.trim() || !draft.content.trim()) return;
-        const newPost = {
-            id: Date.now(),
-            user: draft.user.trim(),
             project: draft.project.trim(),
             content: draft.content.trim(),
             hearts: 0,
@@ -104,35 +83,11 @@ const PostsView = injectIntl(() => {
         };
 
         setPosts(current => [newPost, ...current]);
-        setDraft(current => ({
-            ...current,
-        setPosts(current => [newPost, ...current]);
         setDraft({
-            user: draft.user,
             project: '',
             content: '',
             ageRestricted: false,
             minAge: 10
-        }));
-    };
-
-    const reactPost = (postId, field) => {
-        const reactionKey = `${postId}:${field}`;
-        if (reactions[reactionKey]) return;
-        setReactions(current => ({...current, [reactionKey]: true}));
-        setPosts(current => current.map(post => (
-            post.id === postId ? {...post, [field]: 1} : post
-        )));
-    };
-
-    const addComment = (event, postId) => {
-        event.preventDefault();
-        const text = (commentDrafts[postId] || '').trim();
-        if (!text) return;
-        if (hasSelfHarmMention(text)) {
-            setShowSafetyMessage(true);
-            return;
-        }
         });
     };
 
@@ -146,6 +101,10 @@ const PostsView = injectIntl(() => {
         evt.preventDefault();
         const text = (commentDrafts[postId] || '').trim();
         if (!text) return;
+        if (hasSelfHarmMention(text)) {
+            setShowSafetyMessage(true);
+            return;
+        }
         setPosts(current => current.map(post => (
             post.id === postId ? {...post, comments: [...post.comments, text]} : post
         )));
@@ -156,8 +115,8 @@ const PostsView = injectIntl(() => {
         <Page>
             <main className="posts-page">
                 <section className="posts-composer">
-                    <h1><FormattedMessage defaultMessage="Posts da Comunidade" id="posts.title" /></h1>
-                    <p><FormattedMessage defaultMessage="Compartilhe projetos com a comunidade." id="posts.subtitle" /></p>
+                    <h1><FormattedMessage id="posts.title" /></h1>
+                    <p><FormattedMessage id="posts.subtitle" /></p>
 
                     {!isLoggedIn && (
                         <p className="posts-login-required">
@@ -168,11 +127,6 @@ const PostsView = injectIntl(() => {
                     <form onSubmit={createPost}>
                         <input
                             disabled={!isLoggedIn}
-                    <h1><FormattedMessage id="posts.title" /></h1>
-                    <p><FormattedMessage id="posts.subtitle" /></p>
-                    <form onSubmit={createPost}>
-                        <input name="user" onChange={updateDraft} placeholder="Seu usuário" value={draft.user} />
-                        <input
                             name="project"
                             onChange={updateDraft}
                             placeholder="Nome do projeto"
@@ -182,7 +136,7 @@ const PostsView = injectIntl(() => {
                             disabled={!isLoggedIn}
                             name="content"
                             onChange={updateDraft}
-                            placeholder="O que você quer compartilhar sobre seu projeto?"
+                            placeholder="O que você quer compartilhar?"
                             value={draft.content}
                         />
                         <label className="age-checkbox">
@@ -210,54 +164,37 @@ const PostsView = injectIntl(() => {
                             </label>
                         )}
                         <button disabled={!isLoggedIn} type="submit">
-                            <FormattedMessage defaultMessage="Publicar post" id="posts.publish" />
+                            <FormattedMessage id="posts.publish" />
                         </button>
-                        <button type="submit"><FormattedMessage id="posts.publish" /></button>
                     </form>
                 </section>
 
                 <section className="posts-feed">
-                    <h2><FormattedMessage defaultMessage="Feed de posts" id="posts.feed" /></h2>
+                    <h2><FormattedMessage id="posts.feed" /></h2>
                     {showSafetyMessage && (
                         <div className="posts-safety-message" role="alert">
                             <strong>
                                 {intl.locale && intl.locale.startsWith('pt') ? (
-                                    <FormattedMessage
-                                        defaultMessage="Uma mensagem muito importante para você"
-                                        id="safety.suicide.header.pt"
-                                    />
+                                    <FormattedMessage id="safety.suicide.header.pt" />
                                 ) : (
-                                    <FormattedMessage
-                                        defaultMessage="A important message to you"
-                                        id="safety.suicide.header"
-                                    />
+                                    <FormattedMessage id="safety.suicide.header" />
                                 )}
                             </strong>
                             <p>
                                 {intl.locale && intl.locale.startsWith('pt') ? (
-                                    <FormattedMessage
-                                        defaultMessage="Ei... Se você está pensando em cometer isso, por favor, não comita esse ato. Sua vida importa e você é muito importante. Não cometa suicídio. Por favor, encontre ajuda imediatamente. Suicídio é algo muito sério e não pode ser ignorado. Sua saúde mental é muito importante. Se você é um menor de idade, por favor, fale com os seus pais ou com alguém de confiança imediatamente sobre seus pensamentos suicidos. Não deixe isso passar, pois é algo muito sério. Eu espero muito que você fique bem, seja quem for."
-                                        id="safety.suicide.body.pt"
-                                    />
+                                    <FormattedMessage id="safety.suicide.body.pt" />
                                 ) : (
-                                    <FormattedMessage
-                                        defaultMessage="Hey, if you're thinking to commit that, please don't do it. Your life matters, and you're important. Don't commit suicide. Please, find help immediatly. Suicide is a serious thing and cannot be ignored. You mental health is important. Also, if you're an underage person, please tell your parents or someone you trust immediatly about your suicidal thoughts. Don't let this pass; it's very serious. I hope you get well soon, whoever you are."
-                                        id="safety.suicide.body"
-                                    />
+                                    <FormattedMessage id="safety.suicide.body" />
                                 )}
                             </p>
                             <button onClick={() => setShowSafetyMessage(false)} type="button">
-                                <FormattedMessage defaultMessage="Fechar" id="general.close" />
+                                <FormattedMessage id="general.close" />
                             </button>
                         </div>
                     )}
                     {posts.length === 0 && (
-                        <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
+                        <p className="posts-empty"><FormattedMessage id="posts.empty" /></p>
                     )}
-                    {posts.length === 0 && (
-                        <p className="posts-empty"><FormattedMessage defaultMessage="Ainda não há posts." id="posts.empty" /></p>
-                    )}
-                    <h2><FormattedMessage id="posts.feed" /></h2>
                     {posts.map(post => (
                         <article className="post-card" key={post.id}>
                             <header>
@@ -271,18 +208,6 @@ const PostsView = injectIntl(() => {
                                 </div>
                             )}
                             <div className="post-actions">
-                                <button
-                                    disabled={reactions[`${post.id}:hearts`]}
-                                    onClick={() => reactPost(post.id, 'hearts')}
-                                    type="button"
-                                >
-                                    ❤️ {post.hearts}
-                                </button>
-                                <button
-                                    disabled={reactions[`${post.id}:stars`]}
-                                    onClick={() => reactPost(post.id, 'stars')}
-                                    type="button"
-                                >
                                 <button onClick={() => reactPost(post.id, 'hearts')} type="button">
                                     ❤️ {post.hearts}
                                 </button>
@@ -295,11 +220,6 @@ const PostsView = injectIntl(() => {
                                     <li key={`${post.id}-${index}`}>{comment}</li>
                                 ))}
                             </ul>
-                            <form className="comment-form" onSubmit={event => addComment(event, post.id)}>
-                                <input
-                                    onChange={event => setCommentDrafts(current => ({
-                                        ...current,
-                                        [post.id]: event.target.value
                             <form className="comment-form" onSubmit={evt => addComment(evt, post.id)}>
                                 <input
                                     onChange={evt => setCommentDrafts(current => ({
@@ -317,7 +237,7 @@ const PostsView = injectIntl(() => {
             </main>
         </Page>
     );
-};
+});
 
 PostsView.propTypes = {
     intl: PropTypes.shape({
@@ -334,9 +254,6 @@ PostsView.defaultProps = {
 
 const ConnectedPostsView = connect(state => ({
     user: state.session.session.user
-}))(injectIntl(PostsView));
+}))(PostsView);
 
 render(<ConnectedPostsView />, document.getElementById('app'));
-});
-
-render(<PostsView />, document.getElementById('app'));
