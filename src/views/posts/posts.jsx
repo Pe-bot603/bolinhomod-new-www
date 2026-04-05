@@ -10,36 +10,11 @@ const render = require('../../lib/render.jsx');
 
 require('./posts.scss');
 
-const starterPosts = [
-    {
-        id: 1,
-        user: 'NinaCoder',
-        project: 'Labirinto de Laranja',
-        content: 'Acabei de publicar meu novo projeto com fases secretas. Me digam o que melhorar!',
-        hearts: 12,
-        stars: 8,
-        ageRestricted: false,
-        minAge: 0,
-        comments: ['Muito legal!', 'Adorei o visual!']
-    },
-    {
-        id: 2,
-        user: 'RafaBlocks',
-        project: 'Aventura Espacial',
-        content: 'Esse projeto é recomendado para 13+ por conter desafios avançados de lógica.',
-        hearts: 20,
-        stars: 13,
-        ageRestricted: true,
-        minAge: 13,
-        comments: ['Top demais.', 'Os desafios ficaram incríveis!']
-    }
-];
-
 const PostsView = injectIntl(({intl, user}) => {
     const username = user && user.username ? user.username : '';
     const isLoggedIn = Boolean(username);
 
-    const [posts, setPosts] = React.useState(starterPosts);
+    const [posts, setPosts] = React.useState([]);
     const [draft, setDraft] = React.useState({
         project: '',
         content: '',
@@ -50,7 +25,7 @@ const PostsView = injectIntl(({intl, user}) => {
     const [showSafetyMessage, setShowSafetyMessage] = React.useState(false);
 
     const hasSelfHarmMention = text => (
-        /(suic[ií]dio|suicide|kill myself|me matar|quero morrer|tirar a pr[oó]pria vida)/i.test(text || '')
+        /(suic[ií]dio|suicide|kill myself|me matar|quero morrer|tirar a pr[oó]pria vida|self.harm|automutila|cutting)/i.test(text || '')
     );
 
     const updateDraft = evt => {
@@ -79,7 +54,8 @@ const PostsView = injectIntl(({intl, user}) => {
             stars: 0,
             ageRestricted: draft.ageRestricted,
             minAge: draft.ageRestricted ? Number(draft.minAge) || 10 : 0,
-            comments: []
+            comments: [],
+            createdAt: new Date().toLocaleDateString(intl.locale)
         };
 
         setPosts(current => [newPost, ...current]);
@@ -174,18 +150,14 @@ const PostsView = injectIntl(({intl, user}) => {
                     {showSafetyMessage && (
                         <div className="posts-safety-message" role="alert">
                             <strong>
-                                {intl.locale && intl.locale.startsWith('pt') ? (
-                                    <FormattedMessage id="safety.suicide.header.pt" />
-                                ) : (
-                                    <FormattedMessage id="safety.suicide.header" />
-                                )}
+                                <FormattedMessage
+                                    id={intl.locale && intl.locale.startsWith('pt') ? 'safety.suicide.header.pt' : 'safety.suicide.header'}
+                                />
                             </strong>
                             <p>
-                                {intl.locale && intl.locale.startsWith('pt') ? (
-                                    <FormattedMessage id="safety.suicide.body.pt" />
-                                ) : (
-                                    <FormattedMessage id="safety.suicide.body" />
-                                )}
+                                <FormattedMessage
+                                    id={intl.locale && intl.locale.startsWith('pt') ? 'safety.suicide.body.pt' : 'safety.suicide.body'}
+                                />
                             </p>
                             <button onClick={() => setShowSafetyMessage(false)} type="button">
                                 <FormattedMessage id="general.close" />
@@ -200,6 +172,7 @@ const PostsView = injectIntl(({intl, user}) => {
                             <header>
                                 <strong>@{post.user}</strong>
                                 <span>{post.project}</span>
+                                <small>{post.createdAt}</small>
                             </header>
                             <p>{post.content}</p>
                             {post.ageRestricted && (
