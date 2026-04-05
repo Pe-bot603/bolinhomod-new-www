@@ -4,6 +4,7 @@
   "trailingSlash": false,
   "buildCommand": "npm run build",
   "outputDirectory": "build",
+  "version": 2,
   "rewrites": [
     {"source": "/", "destination": "/splash.html"},
     {"source": "/projects/:path*", "destination": "/projects.html"},
@@ -12,9 +13,6 @@
     {"source": "/explore/:path*", "destination": "/explore.html"},
     {"source": "/search/:path*", "destination": "/search.html"},
     {"source": "/download/link", "destination": "/download.html"},
-    {"source": "/:path((?!.*\\.).*)", "destination": "/:path.html"}
-  "version": 2,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {"source": "/:path((?!.*\.).*)", "destination": "/:path.html"}
   ]
 }
