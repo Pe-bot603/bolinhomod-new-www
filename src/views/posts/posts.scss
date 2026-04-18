@@ -166,3 +166,32 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+.posts-char-count,
+.post-time {
+    margin: 0;
+    color: $type-gray;
+    font-size: .875rem;
+}
+
+.post-time {
+    margin-bottom: .75rem;
+}
+
+.post-actions button.active {
+    border-color: $ui-orange;
+    background: $ui-orange-25percent;
+    color: $ui-orange;
+}
+
+.comments-list {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+        display: flex;
+        gap: .35rem;
+        margin: 0 0 .35rem;
+    }
+}

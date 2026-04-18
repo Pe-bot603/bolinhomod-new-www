@@ -31,3 +31,6 @@ ENV
 /test/integration-cypress/cypress/videos
 /test/integration-cypress/package-lock.json
 /test/integration/node_modules/*
+# Local DB experiments
+/test-db.js
+

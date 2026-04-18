@@ -42,7 +42,7 @@ const {frameless} = require('../../lib/frameless');
 const GUI = require('@scratch/scratch-gui');
 const IntlGUI = injectIntl(GUI.default);
 
-const localStorageAvailable = 'localStorage' in window && window.localStorage !== null;
+const localStorageAvailable = typeof window !== 'undefined' && 'localStorage' in window && window.localStorage !== null;
 
 const xhr = require('xhr');
 const {useEffect, useState, useCallback} = require('react');
