@@ -7,6 +7,9 @@
   "rewrites": [
     {"source": "/", "destination": "/splash.html"},
     {"source": "/create", "destination": "/projects.html"},
+  "version": 2,
+  "rewrites": [
+    {"source": "/", "destination": "/splash.html"},
     {"source": "/projects/:path*", "destination": "/projects.html"},
     {"source": "/messages/:path*", "destination": "/messages.html"},
     {"source": "/studios/:path*", "destination": "/studio.html"},
@@ -14,5 +17,8 @@
     {"source": "/search/:path*", "destination": "/search.html"},
     {"source": "/download/link", "destination": "/download.html"},
     {"source": "/:path((?!.*\\.).*)", "destination": "/:path.html"}
+  ]
+}
+    {"source": "/:path((?!.*\.).*)", "destination": "/:path.html"}
   ]
 }

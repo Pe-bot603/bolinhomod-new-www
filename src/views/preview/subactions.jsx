@@ -194,6 +194,8 @@ Subactions.propTypes = {
     visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
     onVisibilityModeChange: PropTypes.func,
     onAllowRemixesChange: PropTypes.func
+    visibilityMode: PropTypes.oneOf(['private', 'unlisted', 'public']),
+    onVisibilityModeChange: PropTypes.func
 };
 
 module.exports = connect(
