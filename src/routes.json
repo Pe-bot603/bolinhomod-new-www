@@ -431,22 +431,22 @@
         "title": "LEGO BOOST"
     },
     {
-        "name":"3-faq-redirect",
+        "name": "3-faq-redirect",
         "pattern": "^/3faq/?$",
         "routeAlias": "/3faq/?$",
         "redirect": "/faq#scratch3"
     },
     {
-        "name" : "credits-redirect",
+        "name": "credits-redirect",
         "pattern": "^/info/credits/?$",
         "routeAlias": "/info/(cards|credits|faq|donate)/?$",
-        "redirect" : "/credits"
+        "redirect": "/credits"
     },
     {
-        "name" : "faq-redirect",
+        "name": "faq-redirect",
         "pattern": "^/info/faq/?$",
         "routeAlias": "/info/(cards|credits|faq|donate)/?$",
-        "redirect" : "/faq"
+        "redirect": "/faq"
     },
     {
         "name": "donate-redirect",
@@ -736,5 +736,12 @@
         "name": "bird-redirect",
         "pattern": "^/bird/?$",
         "redirect": "/ideas"
+    },
+    {
+        "name": "posts",
+        "pattern": "^/posts/?$",
+        "routeAlias": "/posts/?$",
+        "view": "posts/posts",
+        "title": "Posts"
     }
 ]

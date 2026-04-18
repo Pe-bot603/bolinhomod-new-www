@@ -145,6 +145,48 @@ the site hosted on your local machine can be accessed by a web browser by enteri
 
 ### Troubleshooting
 
+#### Vercel deploy returns 404 on routes
+
+This project outputs many route-specific HTML files (for example `splash.html`, `projects.html`, `studio.html`) instead of a single `index.html`.
+
+For Vercel, use the included `vercel.json` with:
+- `buildCommand: npm run build`
+- `outputDirectory: build`
+- rewrites from dynamic routes (like `/projects/:id`, `/studios/:id`) to the matching generated HTML files.
+
+If Vercel shows **"This deployment can not be redeployed. Please try again from a fresh commit."**,
+push a new commit (even a tiny doc/config change) and deploy that new commit SHA instead of trying to redeploy an immutable old build.
+
+
+#### MongoDB and `test-db.js`
+
+The website frontend does **not** require MongoDB to render routes like `/create`, `/projects/editor`, `/messages`, etc.
+
+- You do **not** need to commit a `test-db.js` file for this repo to run.
+- If you use a local Mongo script for experiments, keep it local (or add it to `.gitignore`).
+- If pages are showing a blank/orange error screen, it is usually a client/runtime issue (routing/build/runtime exception), not MongoDB availability.
+
+#### `npm start` fails with `Cannot find module 'express'`
+
+This means dependencies were not installed successfully (or you are running `npm start` from a different folder).
+
+From the repository root, run:
+
+```bash
+npm install
+npm start
+```
+
+If `npm install` fails on `canvas` while using Node 22/24, switch to Node 20 (the supported version for this repo):
+
+```bash
+nvm install 20
+nvm use 20
+npm install
+```
+
+`canvas` is optional for local web development, so setup should no longer block `npm start` when that native module cannot be built.
+
 When running `npm start`, here are some important log messages to keep an eye out for:
 * `webpack: bundle is now VALID.` – The bundle has been loaded into memory and is now viewable in the browser. This will show up both once `npm start` has completed its setup, and also once updates you make to files have been re-compiled for viewing in the browser.
 * `webpack: bundle is now INVALID.` – If you see this, then it means you have made updates to files that are still being compiled for browser viewing. Pages will still be viewable, but they will not see any updates you made yet.

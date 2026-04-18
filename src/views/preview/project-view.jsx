@@ -42,7 +42,7 @@ const {frameless} = require('../../lib/frameless');
 const GUI = require('@scratch/scratch-gui');
 const IntlGUI = injectIntl(GUI.default);
 
-const localStorageAvailable = 'localStorage' in window && window.localStorage !== null;
+const localStorageAvailable = typeof window !== 'undefined' && 'localStorage' in window && window.localStorage !== null;
 
 const xhr = require('xhr');
 const {useEffect, useState, useCallback} = require('react');
@@ -68,6 +68,18 @@ const setHasIntroducedShareModalFlow = (username = 'guest') =>
 
 const shouldShowShareModal = (username = 'guest') =>
     getLocalStorageValue('shareModalPreference', username) !== false;
+
+const getProjectVisibilityMode = projectId =>
+    getLocalStorageValue('projectVisibilityMode', String(projectId));
+
+const setProjectVisibilityMode = (projectId, mode) =>
+    setLocalStorageValue('projectVisibilityMode', String(projectId), mode);
+
+const getProjectAllowRemixes = projectId =>
+    getLocalStorageValue('projectAllowRemixes', String(projectId));
+
+const setProjectAllowRemixes = (projectId, allowRemixes) =>
+    setLocalStorageValue('projectAllowRemixes', String(projectId), allowRemixes);
 
 const IntlGUIWithProjectHandler = ({...props}) => {
     const [showJourney, setShowJourney] = useState(false);
@@ -195,6 +207,8 @@ class Preview extends React.Component {
             'handleSetProjectThumbnailer',
             'handleShare',
             'handleShareAttempt',
+            'handleAllowRemixesChange',
+            'handleVisibilityModeChange',
             'handleShareModalChangeThumbnailButton',
             'handleUpdateProjectData',
             'handleUpdateProjectId',
@@ -252,7 +266,9 @@ class Preview extends React.Component {
             singleCommentId: singleCommentId,
             greenFlagRecorded: false,
             highlightDriver: null,
-            projectThumbnailUrl: this.props.projectInfo.image ?? ''
+            projectThumbnailUrl: this.props.projectInfo.image ?? '',
+            allowRemix: true,
+            visibilityMode: this.props.isShared ? 'public' : 'private'
         };
         /* In the beginning, if user is on mobile and landscape, go to fullscreen */
         this.setScreenFromOrientation();
@@ -297,6 +313,12 @@ class Preview extends React.Component {
         if (this.props.projectInfo.id !== prevProps.projectInfo.id) {
             storage.setProjectToken(this.props.projectInfo.project_token);
             this.loadProjectData(this.state.projectId, true /* Show cloud/username alerts */);
+            const savedMode = getProjectVisibilityMode(this.props.projectInfo.id);
+            const savedAllowRemixes = getProjectAllowRemixes(this.props.projectInfo.id);
+            this.setState({ // eslint-disable-line react/no-did-update-set-state
+                allowRemix: typeof savedAllowRemixes === 'boolean' ? savedAllowRemixes : true,
+                visibilityMode: savedMode || (this.props.isShared ? 'public' : 'private')
+            });
         }
         if (this.props.projectInfo.id !== prevProps.projectInfo.id) {
             if (typeof this.props.projectInfo.id === 'undefined') {
@@ -847,8 +869,12 @@ class Preview extends React.Component {
         );
         this.setState({
             justRemixed: false,
-            justShared: true
+            justShared: true,
+            visibilityMode: 'public'
         });
+        if (this.props.projectInfo && this.props.projectInfo.id) {
+            setProjectVisibilityMode(this.props.projectInfo.id, 'public');
+        }
     }
     handleShare () {
         if (shouldShowShareModal(this.props.user.username)) {
@@ -861,6 +887,24 @@ class Preview extends React.Component {
         this.setState({
             showEmailConfirmationModal: true
         });
+    }
+    handleVisibilityModeChange (event) {
+        const mode = event.target.value;
+        if (!this.props.userOwnsProject) return;
+        if ((mode === 'public' || mode === 'unlisted') && !this.props.isShared) {
+            this.doShare();
+        }
+        this.setState({visibilityMode: mode});
+        if (this.props.projectInfo && this.props.projectInfo.id) {
+            setProjectVisibilityMode(this.props.projectInfo.id, mode);
+        }
+    }
+    handleAllowRemixesChange (event) {
+        const allowRemix = Boolean(event.target.checked);
+        this.setState({allowRemix: allowRemix});
+        if (this.props.projectInfo && this.props.projectInfo.id) {
+            setProjectAllowRemixes(this.props.projectInfo.id, allowRemix);
+        }
     }
     handleCloseEmailConfirmationModal () {
         this.setState({showEmailConfirmationModal: false});
@@ -1089,7 +1133,7 @@ class Preview extends React.Component {
                             backpackHost={this.props.backpackHost}
                             canAddToStudio={this.props.canAddToStudio}
                             canDeleteComments={this.props.isAdmin || this.props.userOwnsProject}
-                            canRemix={this.props.canRemix}
+                            canRemix={this.props.canRemix && this.state.allowRemix}
                             canReport={this.props.canReport}
                             canRestoreComments={this.props.isAdmin}
                             canSave={this.props.canSave}
@@ -1141,6 +1185,8 @@ class Preview extends React.Component {
                             user={this.props.user}
                             userOwnsProject={this.props.userOwnsProject}
                             userUsesParentEmail={this.props.userUsesParentEmail}
+                            visibilityMode={this.state.visibilityMode}
+                            allowRemix={this.state.allowRemix}
                             visibilityInfo={this.props.visibilityInfo}
                             onAddComment={this.handleAddComment}
                             onAddToStudioClicked={this.handleAddToStudioClick}
@@ -1168,6 +1214,8 @@ class Preview extends React.Component {
                             onSetProjectThumbnailer={this.handleSetProjectThumbnailer}
                             onShare={this.handleShare}
                             onShareAttempt={this.handleShareAttempt}
+                            onVisibilityModeChange={this.handleVisibilityModeChange}
+                            onAllowRemixesChange={this.handleAllowRemixesChange}
                             onSocialClicked={this.handleSocialClick}
                             onSocialClosed={this.handleSocialClose}
                             onToggleComments={this.handleToggleComments}
